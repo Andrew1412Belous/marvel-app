@@ -22,14 +22,14 @@ class CharList extends Component {
   componentDidMount() {
     this.onRequest()
 
-    window.addEventListener('scroll', this.checkPageEnded)
-    window.addEventListener('scroll', this.onUpdateCharListByScroll)
+    // window.addEventListener('scroll', this.checkPageEnded)
+    // window.addEventListener('scroll', this.onUpdateCharListByScroll)
   }
 
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.checkPageEnded)
-    window.removeEventListener('scroll', this.onUpdateCharListByScroll)
-  }
+  // componentWillUnmount() {
+  //   window.removeEventListener('scroll', this.checkPageEnded)
+  //   window.removeEventListener('scroll', this.onUpdateCharListByScroll)
+  // }
 
   checkPageEnded = () => {
     if (
@@ -83,7 +83,7 @@ class CharList extends Component {
   }
 
   focusOnItem = (id) => {
-    this.items
+    this.itemRefs
       .forEach(item => item.classList.remove('char__item_selected'))
 
     this.itemRefs[id].classList.add('char__item_selected')
@@ -103,7 +103,7 @@ class CharList extends Component {
             key={item.id}
             onClick={() => {
               this.props.onCharSelected(item.id)
-              this.focusOnItem(item.id)
+              this.focusOnItem(index)
             }}
             onKeyPress={(e) => {
               if (e.key === ' ' || e.key === "Enter") {
