@@ -28,13 +28,18 @@ class MarvelService {
   }
 
   _transformCharacter = (char) => {
+    const homepage = char.name.split(' ').map(word => word.indexOf('(')
+      ? word
+      : word.replace(/[()]/g, ''))
+      .join('-')
+
     return {
       id: char.id,
       name: char.name,
       description: char.description ? `${char.description.slice(0, 210)}...` : 'There is no description for this character',
       thumbnail: `${char.thumbnail.path}.${char.thumbnail.extension}`,
-      homepage: char.urls[0].url,
-      wiki: char.urls[1].url,
+      homepage: `https://www.marvel.com/characters/${homepage}`,
+      wiki: char.urls.length === 3 ? char.urls[2].url : char.urls[1].url,
       comics: char.comics.items,
     }
   }
