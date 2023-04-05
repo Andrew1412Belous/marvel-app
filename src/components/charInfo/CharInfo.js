@@ -6,6 +6,7 @@ import Spinner from '../spinner/spinner'
 import Skeleton from '../skeleton/Skeleton'
 
 import './charInfo.scss';
+import { Link } from 'react-router-dom'
 
 const CharInfo = (props) => {
   const [char, setChar] = useState(null)
@@ -51,6 +52,16 @@ const View = ({ char }) => {
     ? { objectFit: 'contain' }
     : { objectFit: 'cover' }
 
+  const comicsList = comics.length === 0
+    ? 'Sorry, there is no comics'
+    : comics.map((comic, i) => {
+      return (
+        <li key={i} className="char__comics-item">
+          <Link to={`/comics/${comic.resourceURI.substring(43)}`}>{comic.name}</Link>
+        </li>
+      )
+    })
+
   return (
     <>
       <div className="char__basics">
@@ -72,16 +83,7 @@ const View = ({ char }) => {
       </div>
       <div className="char__comics">Comics:</div>
       <ul className="char__comics-list">
-        {comics.length > 0 ? null : 'There is no comics with this character'}
-        {comics.map((item, index) => {
-          if (index > 9) return
-
-          return (
-            <li key={index} className="char__comics-item">
-              {item.name}
-            </li>
-          )
-        })}
+        {comicsList}
       </ul>
     </>
   )
