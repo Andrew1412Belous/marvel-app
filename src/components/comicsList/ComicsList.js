@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 
 import { Link } from 'react-router-dom'
+import {CSSTransition, TransitionGroup} from 'react-transition-group';
 
 import useMarvelService from '../../services/MarvelService'
 import ErrorMessage from '../errorMessage/errorMessage'
@@ -55,20 +56,22 @@ const ComicsList = () => {
               : { objectFit: 'cover' }
 
             return (
-              <li className="comics__item" key={index}>
-                  <Link to={`/comics/${item.id}`}>
-                      <img src={item.thumbnail} alt={item.title} className="comics__item-img" style={imgStyle}/>
-                      <div className="comics__item-name">{item.title}</div>
-                      <div className="comics__item-price">{item.price}</div>
-                  </Link>
-              </li>
+              <CSSTransition key={item.id} timeout={500} classNames="comics__item">
+                  <li className="comics__item" key={index}>
+                      <Link to={`/comics/${item.id}`}>
+                          <img src={item.thumbnail} alt={item.title} className="comics__item-img" style={imgStyle}/>
+                          <div className="comics__item-name">{item.title}</div>
+                          <div className="comics__item-price">{item.price}</div>
+                      </Link>
+                  </li>
+              </CSSTransition>
             )
         })
 
         return (
-          <ul className="comics__grid">
+          <TransitionGroup component={'ul'} className="comics__grid">
               {comics}
-          </ul>
+          </TransitionGroup>
         )
     }
 
