@@ -24,13 +24,15 @@ const CharSearchForm = () => {
   }
 
   const errorMessage = error ? <div className="char__search-critical-error"><ErrorMessage/></div> : null
-  const results = char === null
+  let results = char === null
     ? null
     : char === undefined
       ? <p className="char__search-error">The character was not found. Check the name and try again</p>
       : <div className="char__search-wrapper">
-         <p className="char__search-success">{`There is! Visit ${char.name} page?`}</p>
-         <button className="btn btn_gray"><Link to={`/characters/${char.id}`}>To page</Link></button>
+         <div className="char__search-success">{`There is! Visit ${char.name} page?`}</div>
+         <Link to={`/characters/${char.id}`} className="button button__secondary">
+            <div className="inner">To page</div>
+         </Link>
         </div>
 
   return (
