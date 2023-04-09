@@ -46,7 +46,8 @@ const CharSearchForm = () => {
         }}
         validationSchema={Yup.object({
           charName: Yup.string().required('This field is required')
-        })}>
+        })}
+        validateOnBlur={false}>
         <Form onChange={(e) => !e.target.value ? setChar(null) : null}>
           <label className="char__search-label">Or find a character by name:</label>
           <div className="char__search-wrapper">
