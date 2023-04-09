@@ -1,0 +1,64 @@
+@import '../../../style/variables.scss';
+
+.single-comic {
+  margin-top: 50px;
+  display: grid;
+  grid-template-columns: 293px 550px auto;
+  column-gap: 50px;
+  align-items: start;
+  &__char-img {
+    width: 293px;
+    height: 293px;
+  }
+  &__name {
+    font-weight: bold;
+    font-size: 22px;
+    line-height: 29px;
+  }
+  &__descr {
+    font-size: 18px;
+    line-height: 24px;
+    margin-top: 25px;
+  }
+  &__info-2 {
+    display: flex;
+    justify-content: space-between;
+  }
+  &__back {
+    justify-self: end;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 24px;
+    &:hover {
+      color: $main-color;
+    }
+  }
+  &-link {
+    margin-top: 10px;
+  }
+}
+
+.char {
+  &__btns {
+    a:nth-child(2) {
+      margin-top: 10px;
+    }
+  }
+  &__comics {
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 24px;
+    margin-top: 10px;
+    &-list {
+      position: relative;
+      margin-top: 10px;
+    }
+    &-item {
+      width: 100%;
+      padding: 0px 10px;
+      line-height: 25px;
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      margin-top: 10px;
+    }
+  }
+}
