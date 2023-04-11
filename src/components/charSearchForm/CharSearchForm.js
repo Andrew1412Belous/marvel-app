@@ -1,5 +1,12 @@
 import { useState } from 'react'
-import { Field, Form, Formik, ErrorMessage as FormikErrorMessage } from 'formik'
+
+import {
+  Field,
+  Form,
+  Formik,
+  ErrorMessage as FormikErrorMessage,
+} from 'formik'
+
 import { Link } from 'react-router-dom'
 import * as Yup from 'yup'
 
@@ -10,7 +17,8 @@ import './charSearchForm.scss'
 
 const CharSearchForm = () => {
   const [char, setChar] = useState(null)
-  const {loading, error, getCharacterByName, clearError} = useMarvelService()
+
+  const { getCharacterByName, clearError, process } = useMarvelService()
 
   const onCharLoaded = (char) => {
     setChar(char)
@@ -23,7 +31,7 @@ const CharSearchForm = () => {
       .then(onCharLoaded)
   }
 
-  const errorMessage = error ? <div className="char__search-critical-error"><ErrorMessage/></div> : null
+  const errorMessage = process === 'error' ? <div className="char__search-critical-error"><ErrorMessage/></div> : null
   let results = char === null
     ? null
     : char === undefined
@@ -60,10 +68,11 @@ const CharSearchForm = () => {
             <button
               type='submit'
               className='button button__main'
-              disabled={loading}>
+              disabled={process === 'loading'}>
               <div className="inner">find</div>
             </button>
           </div>
+          {}
           <FormikErrorMessage name='charName' className='char__search-error' component='div'></FormikErrorMessage>
         </Form>
       </Formik>

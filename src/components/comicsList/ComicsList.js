@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react'
+import {
+  useState,
+  useEffect,
+} from 'react'
 
 import { Link } from 'react-router-dom'
-import {CSSTransition, TransitionGroup} from 'react-transition-group';
 
 import useMarvelService from '../../services/MarvelService'
 import ErrorMessage from '../errorMessage/errorMessage'
@@ -9,90 +11,82 @@ import Spinner from '../spinner/spinner'
 
 import './comicsList.scss';
 
+const setContent = (process, Component, newItemLoading) => {
+  switch (process) {
+    case 'waiting':
+      return <Spinner/>
+    case 'loading':
+      return newItemLoading ? <Component/> : <Spinner/>
+    case 'confirmed':
+      return <Component/>
+    case 'error':
+      return <ErrorMessage/>
+    default:
+      throw new Error('Unexpected process state')
+  }
+}
+
 const ComicsList = () => {
-    const [comicsList, setComicsList] = useState([])
-    const [newItemLoading, setNewItemLoading] = useState(false)
-    const [offset, setOffset] = useState(100)
-    const [comicsEnded, setComicsEnded] = useState(false)
+  const [comicsList, setComicsList] = useState([])
+  const [newItemLoading, setNewItemLoading] = useState(false)
+  const [offset, setOffset] = useState(100)
+  const [comicsEnded, setComicsEnded] = useState(false)
 
-    const { loading, error, getAllComics } = useMarvelService()
+  const { getAllComics, process, setProcess } = useMarvelService()
 
-    useEffect(() => {
-        onRequest(offset, true)
+  useEffect(() => onRequest(offset, true), [])
 
-        return () => {
+  const onRequest = (offset, initial) => {
+    initial ? setNewItemLoading(false) : setNewItemLoading(true)
 
-        }
-    }, [])
+    getAllComics(offset)
+      .then(onComicsListLoaded)
+      .then(() => setProcess('confirmed'))
+  }
 
-    const onRequest = (offset, initial) => {
-        initial ? setNewItemLoading(false) : setNewItemLoading(true)
+  const onComicsListLoaded = (newComicsList) => {
+    setComicsList(comicsList => [...comicsList, ...newComicsList])
+    setNewItemLoading(false)
+    setOffset(offset => offset + 8)
+    setComicsEnded(newComicsList.length < 8)
+  }
 
-        getAllComics(offset)
-          .then(onComicsListLoaded)
-    }
+  function renderComics (items) {
+    const comics = items.map((item, index) => {
+      const imgStyle = item.thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'
+        ? { objectFit: 'contain' }
+        : { objectFit: 'cover' }
 
-    const onComicsListLoaded = (newComicsList) => {
-        setComicsList(comicsList => [...comicsList, ...newComicsList])
-        setNewItemLoading(false)
-        setOffset(offset => offset + 8)
-        setComicsEnded(newComicsList.length < 8)
-    }
-
-    // const itemRefs = useRef([])
-    //
-    // const focusOnItem = (id) => {
-    //     itemRefs.current
-    //       .forEach(item => item.classList.remove('char__item_selected'))
-    //
-    //     itemRefs.current[id].classList.add('char__item_selected')
-    //     itemRefs.current[id].focus()
-    // }
-
-    function renderComics (items) {
-        const comics = items.map((item, index) => {
-            const imgStyle = item.thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'
-              ? { objectFit: 'contain' }
-              : { objectFit: 'cover' }
-
-            return (
-              <CSSTransition key={item.id} timeout={500} classNames="comics__item">
-                  <li className="comics__item" key={index}>
-                      <Link to={`/comics/${item.id}`}>
-                          <img src={item.thumbnail} alt={item.title} className="comics__item-img" style={imgStyle}/>
-                          <div className="comics__item-name">{item.title}</div>
-                          <div className="comics__item-price">{item.price}</div>
-                      </Link>
-                  </li>
-              </CSSTransition>
-            )
-        })
-
-        return (
-          <TransitionGroup component={'ul'} className="comics__grid">
-              {comics}
-          </TransitionGroup>
-        )
-    }
-
-    const errorMessage = error ? <ErrorMessage/> : null
-    const spinner = loading && !newItemLoading ? <Spinner/> : null
-    const items = renderComics(comicsList)
+      return (
+        <li className="comics__item" key={index}>
+          <Link to={`/comics/${item.id}`}>
+            <img src={item.thumbnail} alt={item.title} className="comics__item-img" style={imgStyle}/>
+            <div className="comics__item-name">{item.title}</div>
+            <div className="comics__item-price">{item.price}</div>
+          </Link>
+        </li>
+      )
+    })
 
     return (
-        <div className="comics__list">
-            {errorMessage}
-            {spinner}
-            {items}
-            <button
-              disabled={newItemLoading}
-              style={{'display' : comicsEnded ? 'none' : 'block'}}
-              className="button button__main button__long"
-              onClick={() => onRequest(offset)}>
-                <div className="inner">load more</div>
-            </button>
-        </div>
+      <ul className="comics__grid">
+        {comics}
+      </ul>
     )
+  }
+
+  return (
+    <div className="comics__list">
+      {setContent(process, () => renderComics(comicsList), newItemLoading)}
+      <button
+        disabled={newItemLoading}
+        style={{'display' : comicsEnded ? 'none' : 'block'}}
+        className="button button__main button__long"
+        onClick={() => onRequest(offset)}>
+        <div className="inner">load more</div>
+      </button>
+    </div>
+  )
 }
 
 export default ComicsList;

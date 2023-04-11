@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet'
 
 import './singleComicItem.scss';
-import { Helmet } from 'react-helmet'
 
 const SingleComicItem = ({ data }) => {
   const { title, description, pageCount, thumbnail, language, price } = data

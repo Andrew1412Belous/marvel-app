@@ -1,6 +1,7 @@
-import './singleCharItem.scss'
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
+
+import './singleCharItem.scss'
 
 const SingleCharItem = ({ data }) => {
   const { name, thumbnail, description, homepage, wiki, comics } = data
